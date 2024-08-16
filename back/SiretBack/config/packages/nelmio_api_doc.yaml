@@ -1,0 +1,9 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: Swagger
+            description: This is an api infos for FourData
+            version: 1.0.0
+    areas: # to filter documented areas
+        path_patterns:
+            - ^/entreprise # Accepts routes under /entreprise 
