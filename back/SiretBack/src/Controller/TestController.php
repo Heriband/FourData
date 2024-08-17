@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class TestController extends AbstractController
 {
-    #[Route('/test', name: 'app_test')]
+    #[Route('/test', name: 'app_test', methods: ['GET'])]
     public function index(): JsonResponse
     {
         return $this->json([
@@ -16,4 +16,9 @@ class TestController extends AbstractController
             'path' => 'src/Controller/TestController.php',
         ]);
     }
+
+
+
 }
+
+

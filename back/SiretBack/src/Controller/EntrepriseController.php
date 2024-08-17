@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use OpenApi\Annotations as OA;
 use Nelmio\ApiDocBundle\Annotation\Model;
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 
 #[Route('/entreprise')]
 class EntrepriseController extends AbstractController
@@ -40,11 +42,33 @@ class EntrepriseController extends AbstractController
     #[Route('/', name: 'app_entreprise_index', methods: ['GET'])]
     public function index(EntrepriseRepository $entrepriseRepository): Response
     {
+
+
+
         return $this->render('entreprise/index.html.twig', [
             'entreprises' => $entrepriseRepository->findAll(),
         ]);
         
     }
+
+    #[Route('/get', methods: ['GET'])]
+    public function indexx(EntrepriseRepository $entrepriseRepository): JsonResponse
+    {
+        $entreprises = $entrepriseRepository->findAll();
+
+        $data = [];
+        foreach ($entreprises as $entreprise) {
+            $data[] = [
+                'id' => $entreprise->getId(),
+                'SIRET' => $entreprise->getSIRET(),
+                'Nom' => $entreprise->getNom(),
+                'Adresse' =>  $entreprise->getAdresse(),
+                'SIREN' =>  $entreprise->getSIREN(),
+                'Tva' =>  $entreprise->getTVA(),
+            ];
+        }
+    
+        return new JsonResponse($data);    }
 
 
  /**
