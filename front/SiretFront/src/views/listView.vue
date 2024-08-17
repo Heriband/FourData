@@ -1,8 +1,8 @@
 <script>
 import apiClient from '../client'
+import router from '../router'
 
 export default {
-
   data() {
     return {
       items: []
@@ -14,8 +14,20 @@ export default {
     }).catch(error => {
       console.error('There was an error fetching data from the API:', error);
     });
-  }
+  },
+
+  methods: {
+    deleteItem(id){
+      apiClient.deleteById(id); // supprimer coté DB
+      this.items = this.items.filter(item => item.id !== id); //supprimer en local
+    }, 
+
+    RedirectAddEntreprise(){
+      router.push('/add'); 
+    }
+  },
 }
+
 </script>
 
 
@@ -52,8 +64,29 @@ export default {
     </tbody>
 
     </table>
+    <button @click="RedirectAddEntreprise()">add One</button>
 
   
     <RouterView />
   </template>
   
+
+
+
+  
+
+
+  <style>
+  button {
+    padding: 10px 20px; /* Padding dans le bouton */
+    border: none; /* Enlève la bordure par défaut */
+    border-radius: 4px; /* Bordure arrondie */
+    background-color: #10504d; /* Couleur de fond du bouton */
+    color: #fff; /* Couleur du texte du bouton */
+    cursor: pointer; /* Curseur pointer pour le bouton */
+  }
+  
+  button:hover {
+    background-color: #10504d; /* Couleur du bouton au survol */
+  }
+  </style>
