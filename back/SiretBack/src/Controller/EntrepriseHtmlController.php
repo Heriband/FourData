@@ -12,11 +12,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use OpenApi\Annotations as OA;
 use Nelmio\ApiDocBundle\Annotation\Model;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 
-#[Route('/entreprise')]
-class EntrepriseController extends AbstractController
+#[Route('/entrepriseHtml')]
+class EntrepriseHtmlController extends AbstractController
 {
 
    /**
@@ -24,10 +23,10 @@ class EntrepriseController extends AbstractController
      * @OA\Get(
      *     path="/entreprise",
      *     summary="Retrieve the list of all enterprises",
-     *     description="Returns a list of all enterprises in the system",
+     *     description="Returns a html list of all enterprises in the system",
      *     @OA\Response(
      *         response=200,
-     *         description="A list of enterprises",
+     *         description="A html list of enterprises",
      *         @OA\JsonContent(
      *             type="array",
      *             @OA\Items(ref=@Model(type=Entreprise::class))
@@ -39,28 +38,45 @@ class EntrepriseController extends AbstractController
      *     )
      * )
      */
-    #[Route('/', methods: ['GET'])]
-    public function all(EntrepriseRepository $entrepriseRepository): JsonResponse
+    #[Route('/', name: 'app_entreprise_index', methods: ['GET'])]
+    public function indexHtml(EntrepriseRepository $entrepriseRepository): Response
     {
-        $entreprises = $entrepriseRepository->findAll();
-
-        $data = [];
-        foreach ($entreprises as $entreprise) {
-            $data[] = [
-                'id' => $entreprise->getId(),
-                'SIRET' => $entreprise->getSIRET(),
-                'Nom' => $entreprise->getNom(),
-                'Adresse' =>  $entreprise->getAdresse(),
-                'SIREN' =>  $entreprise->getSIREN(),
-                'Tva' =>  $entreprise->getTVA(),
-            ];
-        }
-    
-        return new JsonResponse($data);    
+        return $this->render('entreprise/index.html.twig', [
+            'entreprises' => $entrepriseRepository->findAll(),
+        ]);
+        
     }
 
 
-    /**
+ /**
+     * @OA\Get(
+     *     path="/entreprise/{id}/edit",
+     *     summary="Display a form to create an enterprise",
+     *     description="Returns a form for editing an existing enterprise identified by its ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="The ID of the enterprise to edit",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Form for editing the enterprise",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="form",
+     *                 type="string",
+     *                 description="Form fields for editing the enterprise"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Enterprise not found"
+     *     )
+     * )
      * @OA\Post(
      *     path="/entreprise/{id}/edit",
      *     summary="Create an enterprise",
@@ -87,13 +103,21 @@ class EntrepriseController extends AbstractController
      *         )
      *     ),
      *     @OA\Response(
+     *         response=303,
+     *         description="Redirects to the list of enterprises after successful Create"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad request, form data is invalid"
+     *     ),
+     *     @OA\Response(
      *         response=404,
      *         description="Enterprise not found"
      *     )
      * )
      */ 
-    #[Route('/new',  methods: ['POST'])]
-    public function newOne(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    #[Route('/new', name: 'app_entreprise_new', methods: ['GET', 'POST'])]
+    public function newHtml(Request $request, EntityManagerInterface $entityManager): Response
     {
         $entreprise = new Entreprise();
         $form = $this->createForm(EntrepriseType::class, $entreprise); #creation formulaire
@@ -103,18 +127,15 @@ class EntrepriseController extends AbstractController
             $entityManager->persist($entreprise);
             $entityManager->flush(); # execute requete SQL pour ajout dans la DB
 
-            return $this->json([
-                'message' => 'entreprise Edit',
-                'Status' => Response::HTTP_OK,
-            ]);
+            return $this->redirectToRoute('app_entreprise_index', [], Response::HTTP_SEE_OTHER);
         }
-        else{
-            return $this->json([
-                'message' => 'Erreur entreprise non Ajouter',
-                'Status' => Response::HTTP_BAD_REQUEST,
-            ]);
-        }
+
+        return $this->render('entreprise/new.html.twig', [
+            'entreprise' => $entreprise,
+            'form' => $form,
+        ]); #redirection formulaire si not good
     }
+
 
     /**
      * @OA\Get(
@@ -139,21 +160,45 @@ class EntrepriseController extends AbstractController
      *     )
      * )
      */
-    #[Route('/{id}', methods: ['GET'])]
-    public function showOne(Entreprise $entreprise): Response
+    #[Route('/{id}', name: 'app_entreprise_show', methods: ['GET'])]
+    public function showHtml(Entreprise $entreprise): Response
     {
-        $data[] = [
-            'id' => $entreprise->getId(),
-            'SIRET' => $entreprise->getSIRET(),
-            'Nom' => $entreprise->getNom(),
-            'Adresse' =>  $entreprise->getAdresse(),
-            'SIREN' =>  $entreprise->getSIREN(),
-            'Tva' =>  $entreprise->getTVA(),
-        ];
-        return new JsonResponse($data);
+        return $this->render('entreprise/show.html.twig', [
+            'entreprise' => $entreprise,
+        ]);
     }
 
+
+
      /**
+     * @OA\Get(
+     *     path="/entreprise/{id}/edit",
+     *     summary="Display a form to edit an enterprise",
+     *     description="Returns a form for editing an existing enterprise identified by its ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="The ID of the enterprise to edit",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Form for editing the enterprise",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="form",
+     *                 type="string",
+     *                 description="Form fields for editing the enterprise"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Enterprise not found"
+     *     )
+     * )
      * @OA\Post(
      *     path="/entreprise/{id}/edit",
      *     summary="Update an enterprise",
@@ -193,8 +238,8 @@ class EntrepriseController extends AbstractController
      *     )
      * )
      */
-    #[Route('/{id}/edit', methods: ['POST'])]
-    public function editOne(Request $request, Entreprise $entreprise, EntityManagerInterface $entityManager): Response
+    #[Route('/{id}/edit', name: 'app_entreprise_edit', methods: ['GET', 'POST'])]
+    public function editHtml(Request $request, Entreprise $entreprise, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(EntrepriseType::class, $entreprise);
         $form->handleRequest($request);
@@ -202,20 +247,17 @@ class EntrepriseController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-
-            return $this->json([
-                'message' => 'entreprise Edit',
-                'Status' => Response::HTTP_OK,
-            ]);
+            return $this->redirectToRoute('app_entreprise_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        else{
-            return $this->json([
-                'message' => 'entreprise not Edit',
-                'Status' => Response::HTTP_BAD_REQUEST,
-            ]);
-        }
+        return $this->render('entreprise/edit.html.twig', [
+            'entreprise' => $entreprise,
+            'form' => $form,
+        ]);
     }
+
+
+
 
     
     /**
@@ -255,15 +297,12 @@ class EntrepriseController extends AbstractController
      *     )
      * )
      */
-    #[Route('/{id}', methods: ['POST'])]
-    public function deleteOne(Request $request, Entreprise $entreprise, EntityManagerInterface $entityManager): Response
+    #[Route('/{id}', name: 'app_entreprise_delete', methods: ['POST'])]
+    public function deleteHtml(Request $request, Entreprise $entreprise, EntityManagerInterface $entityManager): Response
     {
         $entityManager->remove($entreprise);
         $entityManager->flush();
-        return $this->json([
-            'message' => 'entreprise delete',
-            'Status' => Response::HTTP_OK,
-        ]);   
-       
+
+        return $this->redirectToRoute('app_entreprise_index', [], Response::HTTP_SEE_OTHER);
     }
 }
