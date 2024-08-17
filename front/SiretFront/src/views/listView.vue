@@ -6,13 +6,12 @@ import router from '../router'
 export default {
   data() {
     return {
-      showPopup: false, // Contrôle affichage pop-up
       items: []
     }
   },
   created() {
     apiClient.getIndex().then(response => {
-      this.items = response.data;
+    this.items = response.data;
     }).catch(error => {
       console.error('There was an error fetching data from the API:', error);
     });
@@ -28,13 +27,9 @@ export default {
       router.push('/add'); 
     },
 
-
-    openPopup() {
-      this.showPopup = true;
-    },
-    closePopup() {
-      this.showPopup = false;
-    },
+    RedirectDoc(){
+      window.location.href = 'http://127.0.0.1:8000/doc';
+    }
   },
 }
 
@@ -43,9 +38,11 @@ export default {
 
 
 <template>
-  <h1>Entreprise index</h1>
+  <h1 class="title">Entreprise index</h1>
   <ul>
-        <button @click="RedirectAddEntreprise()">add Manual</button>
+        <button @click="RedirectAddEntreprise()">add new one</button>
+        <button @click="RedirectDoc()">Doc</button>
+
   </ul>
 
     <table class="table">

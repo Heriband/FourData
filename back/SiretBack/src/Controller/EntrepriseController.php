@@ -11,33 +11,30 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use OpenApi\Annotations as OA;
-use Nelmio\ApiDocBundle\Annotation\Model;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-
+/**
+ * @OA\Tag(name="JSON")
+ */
 #[Route('/entreprise')]
 class EntrepriseController extends AbstractController
 {
 
    /**
+     * Cette méthode permet de récupérer l'ensemble des entreprises. 
      * 
-     * @OA\Get(
-     *     path="/entreprise",
-     *     summary="Retrieve the list of all enterprises",
-     *     description="Returns a list of all enterprises in the system",
-     *     @OA\Response(
-     *         response=200,
-     *         description="A list of enterprises",
-     *         @OA\JsonContent(
-     *             type="array",
-     *             @OA\Items(ref=@Model(type=Entreprise::class))
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="No enterprises found"
+     * @OA\Response(
+     *     response=200,
+     *     description="Retourne la liste des livres",
+     *     @OA\JsonContent(
+     *        type="array",
+     *        @OA\Items(ref=@Model(type=Book   ::class, groups={"getBooks"}))
      *     )
-     * )
+     * ) 
+     * 
+     * @param EntrepriseRepository $entrepriseRepository
+     * @return JsonResponse
+     * 
      */
     #[Route('/', methods: ['GET'])]
     public function all(EntrepriseRepository $entrepriseRepository): JsonResponse
@@ -61,17 +58,14 @@ class EntrepriseController extends AbstractController
 
 
     /**
+     * 
+     * Méthode d'ajout d'entreprise
+     * 
      * @OA\Post(
      *     path="/entreprise/{id}/edit",
      *     summary="Create an enterprise",
      *     description="Create an existing enterprise identified by its ID with the data provided",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         description="The ID of the enterprise to update",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
+  
      *     @OA\RequestBody(
      *         description="Form data to update the enterprise",
      *         required=true,
@@ -79,9 +73,11 @@ class EntrepriseController extends AbstractController
      *             mediaType="application/x-www-form-urlencoded",
      *             @OA\Schema(
      *                 type="object",
-     *                 @OA\Property(property="name", type="string"),
-     *                 @OA\Property(property="address", type="string"),
-     *                 @OA\Property(property="email", type="string")
+     *                 @OA\Property(property="Nom", type="string"),
+     *                 @OA\Property(property="Address", type="string"),
+     *                 @OA\Property(property="SIRET", type="string"),
+     *                 @OA\Property(property="SIREN", type="string")
+     *                 @OA\Property(property="Tva", type="string"),
      *                 // Add other properties as per your form fields
      *             )
      *         )
@@ -91,6 +87,7 @@ class EntrepriseController extends AbstractController
      *         description="Enterprise not found"
      *     )
      * )
+     * 
      */ 
     #[Route('/new',  methods: ['POST'])]
     public function newOne(Request $request, EntityManagerInterface $entityManager): JsonResponse
@@ -117,6 +114,8 @@ class EntrepriseController extends AbstractController
     }
 
     /**
+     * Méthode pour obtenir une entreprise ciblé
+     * 
      * @OA\Get(
      *     path="/entreprise/{id}",
      *     summary="Retrieve details of a specific enterprise",
@@ -138,6 +137,7 @@ class EntrepriseController extends AbstractController
      *         description="Enterprise not found"
      *     )
      * )
+     * 
      */
     #[Route('/{id}', methods: ['GET'])]
     public function showOne(Entreprise $entreprise): Response
@@ -154,6 +154,9 @@ class EntrepriseController extends AbstractController
     }
 
      /**
+     * 
+     * Méthode pour modifier une entreprise ciblé
+     * 
      * @OA\Post(
      *     path="/entreprise/{id}/edit",
      *     summary="Update an enterprise",
@@ -192,6 +195,7 @@ class EntrepriseController extends AbstractController
      *         description="Enterprise not found"
      *     )
      * )
+     * 
      */
     #[Route('/{id}/edit', methods: ['POST'])]
     public function editOne(Request $request, Entreprise $entreprise, EntityManagerInterface $entityManager): Response
@@ -219,6 +223,9 @@ class EntrepriseController extends AbstractController
 
     
     /**
+     * 
+     *  Méthode pour delete une entreprise ciblé
+     * 
      * @OA\Delete(
      *     path="/entreprise/{id}",
      *     summary="Delete an enterprise",
@@ -254,6 +261,7 @@ class EntrepriseController extends AbstractController
      *         description="Enterprise not found"
      *     )
      * )
+     * 
      */
     #[Route('/{id}', methods: ['POST'])]
     public function deleteOne(Request $request, Entreprise $entreprise, EntityManagerInterface $entityManager): Response

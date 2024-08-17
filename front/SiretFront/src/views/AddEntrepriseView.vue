@@ -50,6 +50,11 @@ export default {
         else{
             if (siret.length != 0 ){
                 getEntrepriseInfo(siret).then(ent => {
+                    if (ent == null){
+                        alert("Siret does not exist");
+                        return
+                    }
+
                     let txt = "ajout entreprise :\n"+
                         `nom : ${ent.Nom}\n`+
                         `adresse : ${ent.Adresse}\n`+

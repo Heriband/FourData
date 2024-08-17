@@ -15,6 +15,7 @@ export default {
   },
 
 
+
   deleteById(id: number){
     return apiClient.post(`/entreprise/${id}`)
   },
