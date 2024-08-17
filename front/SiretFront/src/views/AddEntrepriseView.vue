@@ -4,40 +4,76 @@
 import { Entreprise } from '../model/Entreprise';
 import apiClient from '../client'
 import router from '../router'
+import { getEntrepriseInfo } from '../InseeClient'
 
 export default {
-
+    data() {
+    return {
+      isManual: false, // Contrôle l'affichage 
+    };
+  },
   methods: {
+    changeManual(){
+        this.manual = !this.manual;
+    },
+
     save() { 
         var siret = document.getElementById("entreprise_SIRET").value;
-        var nom = document.getElementById("entreprise_Nom").value;
-        var adresse = document.getElementById("entreprise_Adresse").value;
-        var siren = document.getElementById("entreprise_SIREN").value;
-        var tva = document.getElementById("entreprise_TVA").value;
-        if (siret.length != 0  
-        && nom.length != 0
-        && siret.length != 0
-        && adresse.length != 0
-        && siren.length != 0
-        && siret.length != 0){
-            this.entreprise = new Entreprise(siret, nom, adresse, tva, siren);
-            apiClient.newOne(this.entreprise);
 
-            document.getElementById("entreprise_SIRET").value = "";
-            document.getElementById("entreprise_Nom").value = "";
-            document.getElementById("entreprise_Adresse").value = "";
-            document.getElementById("entreprise_SIREN").value = "";
-            document.getElementById("entreprise_TVA").value = "";
+        if (this.isManual)
+        {
+            var nom = document.getElementById("entreprise_Nom").value;
+            var adresse = document.getElementById("entreprise_Adresse").value;
+            var siren = document.getElementById("entreprise_SIREN").value;
+            var tva = document.getElementById("entreprise_TVA").value;
+            if (siret.length != 0  
+            && nom.length != 0
+            && siret.length != 0
+            && adresse.length != 0
+            && siren.length != 0
+            && siret.length != 0){
+                this.entreprise = new Entreprise(siret, nom, adresse, tva, siren);
+                apiClient.newOne(this.entreprise);
 
-            router.push('/list'); 
-    }
-    else
-        alert("field not init");
+                document.getElementById("entreprise_SIRET").value = "";
+                document.getElementById("entreprise_Nom").value = "";
+                document.getElementById("entreprise_Adresse").value = "";
+                document.getElementById("entreprise_SIREN").value = "";
+                document.getElementById("entreprise_TVA").value = "";
+
+                router.push('/list'); 
+        }
+        else
+            alert("field not init");
+        }
+
+        else{
+            if (siret.length != 0 ){
+                getEntrepriseInfo(siret).then(ent => {
+                    let txt = "ajout entreprise :\n"+
+                        `nom : ${ent.Nom}\n`+
+                        `adresse : ${ent.Adresse}\n`+
+                        `siren : ${ent.SIREN}\n`+
+                        `tva : ${ent.Tva}`
+                    if (confirm(txt)){
+                        console.log("q");
+                        apiClient.newOne(ent);
+                        document.getElementById("entreprise_SIRET").value = "";
+                        router.push('/list'); 
+
+                    }
+                });
+            }
+            else{
+                alert("field Siret not init");
+                
+            }
+
+        }
     }
   }
 }
 </script>
-
 
 
 
@@ -48,22 +84,25 @@ export default {
         <label for="entreprise_SIRET" class="required">S i r e t</label>
         <input type="text" id="entreprise_SIRET" name="entreprise[SIRET]" required="required" maxlength="255">
     </li>
-    <li>
+    <li v-if="isManual" class="manual">
         <label for="entreprise_Nom" class="required">Nom</label>
         <input type="text" id="entreprise_Nom" name="entreprise[Nom]" required="required" maxlength="255">
     </li>    
-    <li>
+    <li v-if="isManual" class="manual">
         <label for="entreprise_Adresse" class="required">Adresse</label>
         <input type="text" id="entreprise_Adresse" name="entreprise[Adresse]" required="required" maxlength="255"></li>
-    <li>
+    <li v-if="isManual" class="manual">
         <label for="entreprise_SIREN" class="required">S i r e n</label>
         <input type="text" id="entreprise_SIREN" name="entreprise[SIREN]" required="required" maxlength="255"></li>
-    <li>
+    <li v-if="isManual" class="manual">
         <label for="entreprise_TVA" class="required">T v a</label>
         <input type="text" id="entreprise_TVA" name="entreprise[TVA]" required="required" maxlength="255">
-    </li>
+    </li v-if="isManual" class="manual">
     <button @click="save()">Save</button>
-
+    <label>
+      <input type="checkbox" v-model="isManual" />
+      manual add
+    </label>
 </ul>
     <RouterView />
     </template>

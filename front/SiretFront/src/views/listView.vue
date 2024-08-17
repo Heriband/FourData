@@ -1,10 +1,12 @@
 <script>
 import apiClient from '../client'
+
 import router from '../router'
 
 export default {
   data() {
     return {
+      showPopup: false, // Contrôle affichage pop-up
       items: []
     }
   },
@@ -24,7 +26,15 @@ export default {
 
     RedirectAddEntreprise(){
       router.push('/add'); 
-    }
+    },
+
+
+    openPopup() {
+      this.showPopup = true;
+    },
+    closePopup() {
+      this.showPopup = false;
+    },
   },
 }
 
@@ -34,17 +44,20 @@ export default {
 
 <template>
   <h1>Entreprise index</h1>
+  <ul>
+        <button @click="RedirectAddEntreprise()">add Manual</button>
+  </ul>
 
     <table class="table">
     <thead>
-        <tr>
-            <th>Id</th>
-            <th>SIRET</th>
-            <th>Nom</th>
-            <th>Adresse</th>
-            <th>SIREN</th>
-            <th>TVA</th>
-            <th>actions</th>
+        <tr >
+            <th class="title">Id</th>
+            <th class="title">SIRET</th>
+            <th class="title">Nom</th>
+            <th class="title">Adresse</th>
+            <th class="title">SIREN</th>
+            <th class="title">TVA</th>
+            <th class="title">actions</th>
         </tr>
     </thead>
     <tbody>
@@ -64,8 +77,6 @@ export default {
     </tbody>
 
     </table>
-    <button @click="RedirectAddEntreprise()">add One</button>
-
   
     <RouterView />
   </template>
@@ -84,9 +95,21 @@ export default {
     background-color: #10504d; /* Couleur de fond du bouton */
     color: #fff; /* Couleur du texte du bouton */
     cursor: pointer; /* Curseur pointer pour le bouton */
+    margin: 0 5px;
   }
   
   button:hover {
     background-color: #10504d; /* Couleur du bouton au survol */
+  }
+
+  .table{
+    width: 900px;
+    box-sizing: border-box;
+    padding: 5px;
+  }
+
+  .title{
+    padding: 5px; 
+    font-weight: bolder;
   }
   </style>
