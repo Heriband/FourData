@@ -23,6 +23,11 @@ export default {
       this.items = this.items.filter(item => item.id !== id); //supprimer en local
     }, 
 
+
+    editItem(id){
+      router.push(`/${id}/edit`); 
+    },
+
     RedirectAddEntreprise(){
       router.push('/add'); 
     },
@@ -67,7 +72,7 @@ export default {
             <td>{{ item.Tva }}</td>
             <td>
                 <!-- Boutons ou autres éléments d'action ici -->
-                <button @click="editItem(item)">Edit</button>
+                <button @click="editItem(item.id)">Edit</button>
                 <button @click="deleteItem(item.id)">Delete</button>
             </td>
         </tr>

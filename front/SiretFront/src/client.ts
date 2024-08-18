@@ -15,12 +15,15 @@ export default {
   },
 
 
+  getById(id: number) {
+    return apiClient.get(`/entreprise/${id}`);
+  },
 
   deleteById(id: number){
     return apiClient.post(`/entreprise/${id}`)
   },
 
-  newOne(entreprise:Entreprise){
+  newOne(entreprise: Entreprise){
     const encodedData = qs.stringify({
       'entreprise[SIRET]': entreprise.SIRET,
       'entreprise[Nom]': entreprise.Nom,
@@ -30,6 +33,18 @@ export default {
     });
     console.log('Données encodées:', encodedData);
     return apiClient.post('/entreprise/new', encodedData);
+  },
+
+  editOne(id: number, entreprise: Entreprise){
+    const encodedData = qs.stringify({
+      'entreprise[SIRET]': entreprise.SIRET,
+      'entreprise[Nom]': entreprise.Nom,
+      'entreprise[Adresse]': entreprise.Adresse,
+      'entreprise[SIREN]': entreprise.SIREN,
+      'entreprise[TVA]': entreprise.Tva
+    });
+    console.log('Données encodées:', encodedData);
+    return apiClient.post(`/entreprise/${id}/edit`, encodedData);
   },
 
 }
