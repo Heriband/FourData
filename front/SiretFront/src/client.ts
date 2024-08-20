@@ -10,19 +10,22 @@ const apiClient = axios.create({
 });
 
 export default {
+  // recuperer liste de toutes les entreprises
   getIndex() {
     return apiClient.get('/entreprise');
   },
 
-
+  //recuperer une entreprise ciblé par ID
   getById(id: number) {
     return apiClient.get(`/entreprise/${id}`);
   },
 
+  //suprrimer une entreprise
   deleteById(id: number){
     return apiClient.post(`/entreprise/${id}`)
   },
 
+  // ajouter une entreprise cote DB
   newOne(entreprise: Entreprise){
     const encodedData = qs.stringify({
       'entreprise[SIRET]': entreprise.SIRET,
@@ -35,6 +38,7 @@ export default {
     return apiClient.post('/entreprise/new', encodedData);
   },
 
+  //modifier une entreprsie coté back
   editOne(id: number, entreprise: Entreprise){
     const encodedData = qs.stringify({
       'entreprise[SIRET]': entreprise.SIRET,

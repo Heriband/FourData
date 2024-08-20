@@ -14,6 +14,8 @@ use OpenApi\Annotations as OA;
 use Nelmio\ApiDocBundle\Annotation\Model;
 
 
+// controller pour renvoie de page HTML
+
 #[Route('/entrepriseHtml')]
 class EntrepriseHtmlController extends AbstractController
 {

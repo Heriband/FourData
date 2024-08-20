@@ -6,6 +6,8 @@ use App\Entity\Entreprise;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
+// permet d'interagir avec la DB pour l'entity Entreprise
+
 /**
  * @extends ServiceEntityRepository<Entreprise>
  */

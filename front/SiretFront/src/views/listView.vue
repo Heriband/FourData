@@ -6,8 +6,8 @@ import router from '../router'
 export default {
   data() {
     return {
-      items: [],
-      sortValue: 'null'
+      items: [], //liste des entreprises
+      sortValue: 'null' // indicatif d'ordre hiérachique des entreprises
     }
   },
   created() {
@@ -21,7 +21,7 @@ export default {
 
   watch: {
     sortValue(select) {
-      this.updateRelatedItems(select);
+      this.updateRelatedItems(select); // update sort des entreprise
     }
   },
 
@@ -46,6 +46,7 @@ export default {
       }
     },
   
+    // REDIRECTION START
 
     editItem(id){
       router.push(`/${id}/edit`); 
@@ -58,6 +59,8 @@ export default {
     RedirectDoc(){
       window.location.href = 'http://127.0.0.1:8000/doc';
     }
+    // REDIRECTION END
+
   },
 }
 
@@ -103,7 +106,7 @@ export default {
             <td>{{ item.SIREN }}</td>
             <td>{{ item.Tva }}</td>
             <td>
-                <!-- Boutons ou autres éléments d'action ici -->
+                <!-- Boutons d'actions -->
                 <button @click="editItem(item.id)">Edit</button>
                 <button @click="deleteItem(item.id)">Delete</button>
             </td>

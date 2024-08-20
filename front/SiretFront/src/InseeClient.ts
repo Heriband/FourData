@@ -9,12 +9,13 @@ interface TokenData {
 }
 
 export async function getToken(): Promise<string> {
-  const data: TokenData = tokenJson;
+  const data: TokenData = tokenJson; // token API INSEE (a modifier lors d 'expiration) (automatisation ?)
   return data.token;
 }
 
 
-
+// recuperation information INSEE via un SIRET 
+// return  Entreprise complete
 export async function getEntrepriseInfo(siret: string) {
   try {
     const token = await getToken();
@@ -27,7 +28,7 @@ export async function getEntrepriseInfo(siret: string) {
     let siren = response.data.etablissement.siren;
     let nom = response.data.etablissement.uniteLegale.denominationUniteLegale
     let adresse = response.data.etablissement.adresseEtablissement.libelleCommuneEtablissement + ", " + response.data.etablissement.adresseEtablissement.numeroVoieEtablissement + " " + response.data.etablissement.adresseEtablissement.libelleVoieEtablissement;
-    let tva = "TVA";
+    let tva = "TVA"; // INSEE ne m'informe pas sur la TVA
     let ent = new Entreprise(siret, nom, adresse, tva, siren);
     return ent;
   } catch (error) {

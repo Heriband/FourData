@@ -62,7 +62,7 @@ class EntrepriseController extends AbstractController
      * Méthode d'ajout d'entreprise
      * 
      * @OA\Post(
-     *     path="/entreprise/{id}/edit",
+     *     path="/entreprise/new",
      *     summary="Create an enterprise",
      *     description="Create an existing enterprise identified by its ID with the data provided",
   
@@ -106,6 +106,8 @@ class EntrepriseController extends AbstractController
             ]);
         }
         else{
+
+            // on peut modifier par (de meme pour les autres) : new JsonResponse($data, Response::HTTP_BAD_REQUEST);     
             return $this->json([
                 'message' => 'Erreur entreprise non Ajouter',
                 'Status' => Response::HTTP_BAD_REQUEST,

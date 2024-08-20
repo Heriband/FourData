@@ -17,9 +17,14 @@ export default {
         this.manual = !this.manual;
     },
 
+    /* 
+    * Utilisateur peut ajouter une entreprise de 2 façons
+    *   - MANUEL : Remplir TOUT les champs 
+    *   - API INSEE : via call DB de l'insee avec une recherche basé sur le SIRET
+    */
     save() { 
         var siret = document.getElementById("entreprise_SIRET").value;
-
+        //MANUEL
         if (this.isManual)
         {
             var nom = document.getElementById("entreprise_Nom").value;
@@ -46,7 +51,7 @@ export default {
         else
             alert("field not init");
         }
-
+        // API INSEE
         else{
             if (siret.length != 0 ){
                 getEntrepriseInfo(siret).then(ent => {
@@ -89,6 +94,7 @@ export default {
         <label for="entreprise_SIRET" class="required">S i r e t</label>
         <input type="text" id="entreprise_SIRET" name="entreprise[SIRET]" required="required" maxlength="255">
     </li>
+    <!-- Actions manuel -->
     <li v-if="isManual" class="manual">
         <label for="entreprise_Nom" class="required">Nom</label>
         <input type="text" id="entreprise_Nom" name="entreprise[Nom]" required="required" maxlength="255">
